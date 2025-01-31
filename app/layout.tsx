@@ -5,13 +5,7 @@ import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
-import {
-  Geist_Mono,
-  Inter,
-  JetBrains_Mono,
-  Space_Grotesk,
-  Space_Mono,
-} from "next/font/google";
+import { Geist_Mono, Inter, JetBrains_Mono } from "next/font/google";
 
 export const inter = Inter({
   subsets: ["latin"],

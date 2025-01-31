@@ -4,22 +4,13 @@ import {
   BlocksIcon,
   BookTextIcon,
   BracesIcon,
-  BracketsIcon,
   BrickWallIcon,
   BrushIcon,
-  CaseSensitiveIcon,
-  CheckIcon,
-  ChevronRight,
   DoorClosedIcon,
   FeatherIcon,
-  FileCog2Icon,
-  HashIcon,
-  ImageIcon,
-  MousePointer2Icon,
   TerminalIcon,
   ToyBrickIcon,
   WaypointsIcon,
-  WholeWord,
 } from "lucide-react";
 import React from "react";
 

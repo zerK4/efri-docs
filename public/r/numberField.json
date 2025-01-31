@@ -1,0 +1,19 @@
+{
+  "name": "numberField",
+  "type": "registry:component",
+  "registryDependencies": [
+    "input"
+  ],
+  "dependencies": [
+    "react-hook-form",
+    "react"
+  ],
+  "files": [
+    {
+      "type": "registry:component",
+      "content": "import {\n  FormControl,\n  FormDescription,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormMessage,\n} from \"@/components/ui/form\";\nimport { Input } from \"@/components/ui/input\";\nimport { cn } from \"@/lib/utils\";\nimport React from \"react\";\nimport { SharedFormFieldProps } from \"../form\";\n\nfunction NumberField({\n  config,\n  label,\n  isOptional,\n  control,\n  fieldName,\n}: SharedFormFieldProps<\"number\">) {\n  return (\n    <FormField\n      key={fieldName}\n      control={control}\n      rules={config.rules}\n      name={fieldName}\n      render={({ field }) => (\n        <FormItem className={cn(\"flex flex-col\", config.className)}>\n          <FormLabel className={config.labelClassName}>\n            {label}\n            {isOptional && (\n              <span className='ml-1 text-muted-foreground'>(Optional)</span>\n            )}\n          </FormLabel>\n          <FormControl>\n            <Input\n              {...field}\n              type='text'\n              value={field.value ?? \"\"}\n              onChange={(e) => {\n                const value = e.target.value;\n                if (value === \"\" || /^-?\\d*[.,]?\\d*$/.test(value)) {\n                  field.onChange(\n                    config.type !== \"text\" ? Number(value) : value\n                  );\n                }\n              }}\n              className={config.inputClassName}\n              placeholder={config.placeholder}\n            />\n          </FormControl>\n          {config.description && (\n            <FormDescription>{config.description}</FormDescription>\n          )}\n          <FormMessage />\n        </FormItem>\n      )}\n    />\n  );\n}\n\nexport default NumberField;\n",
+      "path": "components/forms/sharedForm/components/numberField.tsx",
+      "target": "components/forms/sharedForm/components/numberField.tsx"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+---
+title: The router
+---
+
+The `Router` class is a singleton-based routing system designed for handling HTTP requests. It allows defining routes, grouping them, and applying middleware.
+
+<Note>
+The router is missing some of the goodies for now, like `onBeforeLoad` and `onAfterLoad` hooks. Planning to add them soon.
+</Note>
+
+### Features
+- Supports HTTP methods: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`
+- Route grouping with prefixes and middleware
+- Middleware execution before reaching the route handler
+- Controller-based route handling
+- Dynamic parameter extraction from route paths
+
+## Usage
+
+### Defining Routes
+You can define routes using the provided HTTP method functions.
+
+```ts
+import { Router } from 'efri/core/Router';
+
+const router = Router.getInstance();
+
+router.get('/users', ({ req, res }) => {
+  return res.json({ message: 'List of users' });
+});
+
+router.post('/users', ({ req, res }) => {
+  return res.json({ message: 'User created' });
+});
+```
+
+### Route Parameters
+Routes contain a dynamic parameter syntax that allows you to extract params and queries from the URL path.
+
+```ts
+router.get('/users/{id}', ({ req, res, params }) => {
+  return res.json({ userId: params.id });
+});
+```
+
+### Route Grouping
+You can group routes using prefixes and middleware.
+
+```ts
+router.group({ prefix: '/admin', middleware: ['auth'] }, () => {
+  router.get('/dashboard', ({ req, res }) => {
+    return res.json({ message: 'Admin Dashboard' });
+  });
+});
+```
+
+### Middleware
+Middleware can be applied globally or to specific routes.
+
+```ts
+router.get('/protected', ({ req, res }) => {
+  return res.json({ message: 'Protected route' });
+}, ['auth']);
+```
+
+### Controller-based Routing
+Instead of inline functions, you can use controllers.
+
+```ts
+class UserController {
+  index({ req, res }) {
+    return res.json({ message: 'User List' });
+  }
+}
+
+router.get('/users', [UserController, 'index']);
+```
+
+## API Reference
+
+### `Router.getInstance()`
+Returns the singleton instance of the `Router` class.
+
+### `Router.getRoutes()`
+Returns all registered routes.
+
+### `router.get(path, handler, middleware?)`
+Registers a `GET` route.
+
+### `router.post(path, handler, middleware?)`
+Registers a `POST` route.
+
+### `router.put(path, handler, middleware?)`
+Registers a `PUT` route.
+
+### `router.delete(path, handler, middleware?)`
+Registers a `DELETE` route.
+
+### `router.patch(path, handler, middleware?)`
+Registers a `PATCH` route.
+
+### `router.group(options, callback)`
+Groups routes under a common prefix and/or middleware.
+

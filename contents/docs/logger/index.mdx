@@ -1,0 +1,23 @@
+---
+title: The Logger
+description: The logging system of Efri
+---
+
+<Note type="warning">
+The logger is still work in progress, and the logger system is not yet stable or configurable.
+</Note>
+
+The logger can be used like this:
+```ts
+import { logger } from "efri/core/logger";
+
+logger.info('This is an info message');
+logger.warn('This is a warning message');
+logger.error('This is an error message');
+```
+
+This will log the message to the console, and also to the `./logs/app.log` file.
+
+<Note type="success">
+Configuration to come soon.
+</Note>

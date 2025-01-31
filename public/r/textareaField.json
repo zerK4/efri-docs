@@ -1,0 +1,19 @@
+{
+  "name": "textareaField",
+  "type": "registry:component",
+  "registryDependencies": [
+    "textarea"
+  ],
+  "dependencies": [
+    "react-hook-form",
+    "react"
+  ],
+  "files": [
+    {
+      "type": "registry:component",
+      "content": "import {\n  FormControl,\n  FormDescription,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormMessage,\n} from \"@/components/ui/form\";\nimport { Textarea } from \"@/components/ui/textarea\";\nimport { cn } from \"@/lib/utils\";\nimport React from \"react\";\nimport { SharedFormFieldProps } from \"../form\";\n\nfunction TextareaField({\n  config,\n  label,\n  isOptional,\n  control,\n  fieldName,\n}: SharedFormFieldProps<\"text\">) {\n  return (\n    <FormField\n      key={fieldName}\n      control={control}\n      rules={config.rules}\n      name={fieldName}\n      render={({ field }) => (\n        <FormItem className={cn(\"flex flex-col\", config.className)}>\n          <FormLabel className={config.labelClassName}>\n            {label}\n            {isOptional && (\n              <span className='ml-1 text-muted-foreground'>(Optional)</span>\n            )}\n          </FormLabel>\n          <FormControl>\n            <Textarea\n              placeholder={config.placeholder || `Enter ${label}`}\n              {...field}\n              className={config.inputClassName}\n            />\n          </FormControl>\n          {config.description && (\n            <FormDescription>{config.description}</FormDescription>\n          )}\n          <FormMessage />\n        </FormItem>\n      )}\n    />\n  );\n}\n\nexport default TextareaField;\n",
+      "path": "components/forms/sharedForm/components/textareaField.tsx",
+      "target": "components/forms/sharedForm/components/textareaField.tsx"
+    }
+  ]
+}

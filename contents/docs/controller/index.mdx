@@ -1,0 +1,35 @@
+---
+title: The router
+---
+
+The `Router` class is a singleton-based routing system designed for handling HTTP requests. It allows defining routes, grouping them, and applying middleware.
+
+<Note type="warning">
+The base controller `Controller` class is subjected to change, i know for sure there are things to add, don't know if there is anything to remove.
+</Note>
+
+### Usage
+
+1. Create a controller file.
+
+```bash
+bun efri make:controller UserController
+```
+This will create a controller looking like this:
+
+```ts
+import { Controller } from "efri/core/controllers/Controller";
+import type { RouterContext } from "efri/core/types/router";
+
+export class UserController extends Controller {
+  public async index({ res }: RouterContext): Promise<Response> {
+    return res.json({ message: "Hello World" });
+  }
+}
+```
+
+2. Use it in your routes.
+
+```ts
+router.get('/users', [UserController, 'index']);
+```

@@ -1,0 +1,19 @@
+{
+  "name": "selectField",
+  "type": "registry:component",
+  "registryDependencies": [
+    "select"
+  ],
+  "dependencies": [
+    "react-hook-form",
+    "react"
+  ],
+  "files": [
+    {
+      "type": "registry:component",
+      "content": "import {\n  FormControl,\n  FormDescription,\n  FormField,\n  FormItem,\n  FormLabel,\n  FormMessage,\n} from \"@/components/ui/form\";\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from \"@/components/ui/select\";\nimport { cn } from \"@/lib/utils\";\nimport React from \"react\";\nimport { z } from \"zod\";\nimport { SharedFormFieldProps } from \"../form\";\n\nfunction SelectField({\n  fieldName,\n  control,\n  config,\n  label,\n  isOptional,\n  schema,\n}: SharedFormFieldProps<\"select\">) {\n  return (\n    <FormField\n      key={fieldName}\n      control={control}\n      rules={config.rules}\n      name={fieldName}\n      render={({ field }) => (\n        <FormItem className={cn(\"flex flex-col\", config.className)}>\n          <FormLabel className={config.labelClassName}>\n            {label}\n            {isOptional && (\n              <span className='ml-1 text-muted-foreground'>(Optional)</span>\n            )}\n          </FormLabel>\n          <FormControl>\n            <Select\n              onValueChange={(e) =>\n                schema instanceof z.ZodNumber\n                  ? field.onChange(Number(e))\n                  : field.onChange(e)\n              }\n            >\n              <SelectTrigger>\n                <SelectValue />\n              </SelectTrigger>\n              <SelectContent>\n                {config.options?.map((item) => (\n                  <SelectItem key={item.value} value={String(item.value)}>\n                    {item.label}\n                  </SelectItem>\n                ))}\n              </SelectContent>\n            </Select>\n          </FormControl>\n          {config.description && (\n            <FormDescription>{config.description}</FormDescription>\n          )}\n          <FormMessage />\n        </FormItem>\n      )}\n    />\n  );\n}\n\nexport default SelectField;\n",
+      "path": "components/forms/sharedForm/components/selectField.tsx",
+      "target": "components/forms/sharedForm/components/selectField.tsx"
+    }
+  ]
+}

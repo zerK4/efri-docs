@@ -1,0 +1,18 @@
+{
+  "name": "cmdCtrlButton",
+  "type": "registry:ui",
+  "registryDependencies": [
+    "tooltip"
+  ],
+  "dependencies": [
+    "react"
+  ],
+  "files": [
+    {
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport React, { useEffect, useState } from \"react\";\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipTrigger,\n} from \"@/components/ui/tooltip\";\n\nconst CmdCtrlButton = ({ message }: { message?: string }) => {\n  const [modifierKey, setModifierKey] = useState(\"ctrl\");\n\n  useEffect(() => {\n    const isMac = navigator.userAgent.toLowerCase().includes(\"mac\");\n    setModifierKey(isMac ? \"cmd\" : \"ctrl\");\n  }, []);\n\n  return (\n    <div className='flex items-center gap-4'>\n      <Tooltip>\n        <TooltipTrigger>\n          <span className='flex items-center gap-2 cursor-default'>\n            {modifierKey === \"cmd\" ? \"⌘\" : \"^\"}\n            <span className='text-xs'>Enter</span>\n          </span>\n        </TooltipTrigger>\n        <TooltipContent>\n          Press {modifierKey} + Enter {message} to submit\n        </TooltipContent>\n      </Tooltip>\n    </div>\n  );\n};\n\nexport default CmdCtrlButton;\n",
+      "path": "components/ui/cmdCtrlButton.tsx",
+      "target": "components/ui/cmdCtrlButton.tsx"
+    }
+  ]
+}

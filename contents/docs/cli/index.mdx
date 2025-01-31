@@ -1,0 +1,37 @@
+---
+title: CLI
+description: The documentation for Efri CLI
+---
+
+Powerfull? Yes, but still in work in progress and in a very early stage.
+
+## Commands
+
+1. ### `bun efri make:command`
+Ofc we have a command to make commands, this will create a commands folder in your project, 
+and a command file inside it extending the `Command` class from Efri.
+
+2. ### `bun efri make:controller`
+This will create a controller file in your project, extending the `Controller` class from Efri.
+
+3. ### `bun efri make:model`
+This will create a model file in your project, extending the `Model` class from Efri.
+
+6. ### `bun efri make:migration`
+This will create a migration file in your project, extending the `Migration` class from Efri.
+
+7. ### `bun efri migrate`
+This will run all the migrations in your project.
+
+8. ### `bun efri migrate:rollback`
+This will rollback the last migration in your project.
+
+9. ### `bun efri migrate:status`
+This will show you the status of the migrations in your project.
+
+10. ### `bun efri routes:list`
+This will list all the routes in your project.
+
+Options:
+- `--export`: Returns the routes ready to be copied, without styles.
+- `--export --json`: Output the routes in JSON format.

@@ -1,0 +1,144 @@
+---
+title: The model
+description: Efri model documentation
+---
+
+<Note type="warning">
+The model is still work in progress, and the model system is not yet stable.
+</Note>
+
+The Efri model system is designed to provide a flexible and powerful way to interact with your database, inspired by Laravel's Eloquent ORM. It leverages Knex.js under the hood for query building and allows you to perform CRUD operations, query the database, and manage relationships between models. This documentation will guide you through the usage of the `Model` class, including how to create models using the CLI.
+
+---
+
+## Installation
+
+Before using the `Model` class, ensure you have the necessary dependencies installed:
+
+```bash
+npm install knex
+```
+
+You will also need to configure your database connection. This is typically done via a configuration file that is loaded using the `ConfigLoader` class.
+
+---
+
+## Creating a Model
+
+Efri provides a CLI tool to quickly generate model files. To create a model, run the following command:
+
+```bash
+bun efri make:model User
+```
+
+This will generate a model file in your project, which looks like this:
+
+```typescript
+import { Model } from "efri/core/models/Model";
+
+export interface IUserModel {
+  id: number;
+}
+
+export class UserModel extends Model<IUserModel> {
+  protected static primaryKey: string = "id";
+  public table?: string | undefined = "user_models";
+}
+```
+
+<Note type="success">
+We plan to add relations to the model like in Laravel.
+</Note>
+
+---
+
+## Basic Usage
+
+To use the `Model` class, extend it and define the table name and primary key for your model.
+
+```typescript
+import { Model } from './Model';
+
+class User extends Model<User> {
+  protected table = 'users';
+  protected primaryKey = 'id';
+  protected timestamps = true;
+}
+```
+
+### Example: Creating a New User
+
+```typescript
+const user = await User.create({
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+});
+
+console.log(user);
+```
+
+---
+
+## Query Builder Methods
+
+The `Model` class provides several static methods for building queries.
+
+### Example: Fetching a User by ID
+
+```typescript
+const user = await User.find(1).first();
+console.log(user);
+```
+
+### Example: Fetching Users with a Condition
+
+```typescript
+const users = await User.where('age', '>', 18).get();
+console.log(users);
+```
+
+### Example: Fetching Users with Specific Columns
+
+```typescript
+const users = await User.select('name', 'email').get();
+console.log(users);
+```
+
+---
+
+## CRUD Operations
+
+The `Model` class supports basic CRUD operations.
+
+### Example: Updating a User
+
+```typescript
+const updatedUser = await User.update(1, {
+  name: 'Jane Doe',
+});
+
+console.log(updatedUser);
+```
+
+### Example: Deleting a User
+
+```typescript
+const isDeleted = await User.delete(1);
+console.log(isDeleted); // true if deleted, false otherwise
+```
+
+---
+
+## Pagination
+
+The `Model` class provides a `paginate` method for fetching paginated results.
+
+### Example: Fetching Paginated Users
+
+```typescript
+const { data, total, page, lastPage } = await User.paginate(1, 10);
+console.log(data); // Array of users
+console.log(total); // Total number of users
+console.log(page); // Current page number
+console.log(lastPage); // Last page number
+```

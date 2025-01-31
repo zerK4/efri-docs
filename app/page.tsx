@@ -95,7 +95,7 @@ export default function Page() {
               </motion.span>
             );
           })}
-          <Link href={"https://sepavl.com"} target='_blank'>
+          {/* <Link href={"https://sepavl.com"} target='_blank'>
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{
@@ -107,7 +107,7 @@ export default function Page() {
             >
               sepavl.com
             </motion.div>
-          </Link>
+          </Link> */}
         </motion.div>
       </div>
       <motion.div

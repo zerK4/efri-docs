@@ -1,3 +1,3 @@
-# ui.sepavl.com
+# efri.sepavl.com
 
-### Check the docs [here](https://ui.sepavl.com/)
+### Check the docs [here](https://efri.sepavl.com/)

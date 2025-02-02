@@ -1,8 +1,8 @@
 {
-  "name": "ui.sepavl.com",
+  "name": "efri.sepavl.com",
   "version": "2.0.0",
-  "homepage": "https://ui.sepavl.com/",
-  "description": "Multi-step form, shared form and components for react",
+  "homepage": "https://efri.sepavl.com/",
+  "description": "Efri framework documentation",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

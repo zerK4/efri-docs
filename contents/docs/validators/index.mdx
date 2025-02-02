@@ -1,0 +1,183 @@
+---
+title: Validators
+description: The validators system in Efri
+---
+
+You need a way to control what data is being sent to your application. Efri provides a simple way to do this with validators.
+
+---
+
+## 🚀 Getting Started
+
+### 1️⃣ Define a Validator
+
+You can create a new validator in the `validators` directory manually or by using the following command:
+
+```bash
+bun efri make:validator newUser
+```
+
+This command generates the following validator definition:
+- It defines a new validator named `newUser`
+- It defines a Zod schema for the validator
+- It registers the validator with the `validator` object
+- It registers the validator as a middleware for the `newUser` ability
+
+```ts
+import { z } from "zod";
+import { validator } from "efri/core/validators/CoreValidator";
+
+validator.define(
+  "newUser",
+  z.object({
+    name: z.string().min(3),
+    email: z.string().email(),
+    password: z.string().min(6),
+  })
+);
+
+validator.middleware("newUser");
+```
+
+---
+
+## 🔍 Validator API
+
+### Define a Validator
+
+Registers a new validation schema.
+
+```ts
+validator.define(name: string, schema: ZodSchema<any>)
+```
+
+#### Example
+```ts
+validator.define("post", z.object({
+  title: z.string().min(5),
+  content: z.string().min(10),
+}));
+```
+
+---
+
+### Validate Data
+
+Validates a given data object against a named validator.
+
+```ts
+validator.validate(name: string, data: unknown): { success: boolean; errors?: any }
+```
+
+#### Example
+```ts
+const result = validator.validate("post", { title: "Hi", content: "Short" });
+if (!result.success) {
+  console.log(result.errors);
+}
+```
+
+---
+
+### Get All Validators
+
+Returns all registered validators.
+
+```ts
+validator.getAll(): Record<string, ZodSchema<any>>
+```
+
+#### Example
+```ts
+const allValidators = validator.getAll();
+console.log(Object.keys(allValidators));
+```
+
+---
+
+### Get a Specific Validator
+
+Retrieves a specific validator by name.
+
+```ts
+validator.get(name: string): ZodSchema<any> | undefined
+```
+
+#### Example
+```ts
+const userValidator = validator.get("newUser");
+```
+
+---
+
+### Middleware for Validation
+
+Registers a middleware for validating request bodies.
+
+```ts
+validator.middleware(name: string)
+```
+
+#### Example
+```ts
+validator.middleware("newUser");
+```
+
+This middleware will automatically validate request bodies for the `newUser` schema.
+
+---
+
+## 🎯 Using Validators in Controllers
+
+```ts
+import { User, type IUser } from "../models/User";
+import { Controller } from "efri/core/controllers/Controller";
+import type { RouterContext } from "efri/core/types/router";
+import { validator } from "efri/core/validators/CoreValidator";
+
+export class UserController extends Controller {
+  public async create({ res, req }: RouterContext) {
+    try {
+      const safe = validator.validate("newUser", req.body);
+
+      if (!safe.success) {
+        return res.json({ error: safe.errors }, 400);
+      }
+
+      const data: IUser = {
+        name: "John Doe",
+        email: "john@example.com",
+        password: "password",
+      };
+
+      const user = await User.create(data);
+      return res.json({ user });
+    } catch (error) {
+      return res.json({ error: "Internal Server Error" }, 500);
+    }
+  }
+}
+```
+
+---
+
+## 🔐 Using Middleware for Validator Authorization
+
+```ts
+import { gate } from "efri/core/gates/CoreGate";
+import { UserController } from "../controllers/UserController";
+import { Router } from "efri/core/router";
+
+const router = Router.getInstance();
+
+gate.setUser({ id: 1, name: "Test User", email: "test@example.com" });
+
+router.group({ prefix: "/api", middleware: ["logger", "user.read"] }, () => {
+  router.group({ prefix: "/users" }, () => {
+    router.post("/", [UserController, "create"], ["newUser"]);
+  });
+});
+```
+
+This will block the access before triggering the controller method if the request body is not valid.
+

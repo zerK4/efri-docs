@@ -1,0 +1,195 @@
+---
+title: Gates
+description: The gates system in Efri
+---
+
+Gates are a powerful feature in Efri that allow you to control access to your application's routes through controllers or simple handlers.
+
+---
+
+## 🚀 Getting Started
+
+### 1️⃣ Define a Gate
+
+You can create a new gate in the `gates` directory manually or by using the following command:
+
+```bash
+bun efri make:gate canRead
+```
+
+This command generates the following gate definition:
+
+```ts
+import { gate } from "efri/core/gates/CoreGate";
+import type { User } from "../models/User";
+import type { ResponseHelper } from "efri/core/helpers/ResponseHelper";
+
+gate.define("user.read", async (user: User | null) => {
+  console.log("Checking gate for:", user);
+  return user?.id === 1; // Replace with actual logged-in user logic.
+});
+
+export const UserCanRead = async (
+  cb: () => Promise<Response>,
+  check: string,
+  res: ResponseHelper
+) => {
+  if (await gate.allows(check)) {
+    return cb();
+  } else {
+    return res.json({ error: "Unauthorized" }, 403);
+  }
+};
+
+gate.middleware("user.read");
+```
+
+---
+
+### 2️⃣ Use the Gate in a Controller or Handler
+
+```ts
+import { User, type IUser } from "../models/User";
+import { Controller } from "efri/core/controllers/Controller";
+import type { RouterContext } from "efri/core/types/router";
+import { gate } from "efri/core/gates/CoreGate";
+import { UserCanRead } from "../gates/canRead";
+
+export class UserController extends Controller {
+  static {
+    const testUser = { id: 1, name: "Test User", email: "test@example.com" };
+    gate.setUser(testUser);
+  }
+
+  @Authorized("user.read")
+  public async index({ res }: RouterContext): Promise<Response> {
+    const users = await User.get();
+    return res.json(users);
+  }
+
+  async show({ res, params }: RouterContext): Promise<Response> {
+    return await UserCanRead(
+      async () => {
+        try {
+          const user = await User.find(params.user).first();
+          return res.json({ user });
+        } catch (error) {
+          console.error(error);
+          return res.json({ error: "Internal Server Error" }, 500);
+        }
+      },
+      "user.read",
+      res
+    );
+  }
+}
+```
+
+#### ✅ Ways to Use Gates
+- `@Authorized("user.read")` decorator
+- Custom function inside gate definition
+- `gate.allows("user.read")` method
+- Middleware-based authorization
+
+---
+
+### 3️⃣ Use Middleware for Gate Authorization
+
+```ts
+import { gate } from "efri/core/gates/CoreGate";
+import { UserController } from "../controllers/UserController";
+import { Router } from "efri/core/router";
+
+const router = Router.getInstance();
+
+gate.setUser({ id: 1, name: "Test User", email: "test@example.com" });
+
+router.group({ prefix: "/api", middleware: ["logger", "user.read"] }, () => {
+  router.group({ prefix: "/users" }, () => {
+    router.get("/", [UserController, "index"]);
+  });
+});
+```
+
+---
+
+## 🛠 API Reference
+
+### 🔹 `define(name: string, callback: GateFunction): void`
+Registers a new gate with a name and a callback function.
+
+```ts
+gate.define("admin", (user) => user?.role === "admin");
+```
+
+---
+
+### 🔹 `setUser(user: User | null): void`
+Sets the currently authenticated user for gate checks.
+
+```ts
+gate.setUser({ id: 1, name: "Pavel", role: "admin" });
+```
+
+---
+
+### 🔹 `allows(ability: string, ...args: any[]): Promise<boolean>`
+Checks if the user has access to a gate.
+
+```ts
+const isAdmin = await gate.allows("admin");
+console.log(isAdmin); // true or false
+```
+
+---
+
+### 🔹 `denies(ability: string, ...args: any[]): Promise<boolean>`
+Checks if the user does *not* have access to a gate.
+
+```ts
+const isDenied = await gate.denies("admin");
+console.log(isDenied); // true or false
+```
+
+---
+
+### 🔹 `any(abilities: string[], ...args: any[]): Promise<boolean>`
+Checks if the user passes *at least one* of the given gates.
+
+```ts
+const canAccess = await gate.any(["admin", "editor"]);
+console.log(canAccess); // true if the user has any of these roles
+```
+
+---
+
+### 🔹 `all(abilities: string[], ...args: any[]): Promise<boolean>`
+Checks if the user passes *all* of the given gates.
+
+```ts
+const canManage = await gate.all(["admin", "editor"]);
+console.log(canManage); // true if the user has both roles
+```
+
+---
+
+### 🔹 `middleware(ability: string): void`
+Registers a middleware function to protect a route.
+
+```ts
+gate.middleware("admin");
+```
+
+---
+
+## 📌 Summary of API Methods
+
+| Method | Description |
+|--------|-------------|
+| `define(name, callback)` | Define a new gate |
+| `setUser(user)` | Set the authenticated user |
+| `allows(ability, ...args)` | Check if user has access |
+| `denies(ability, ...args)` | Check if user is denied access |
+| `any(abilities, ...args)` | Check if user passes at least one gate |
+| `all(abilities, ...args)` | Check if user passes all given gates |
+| `middleware(ability)` | Register a middleware for a gate |

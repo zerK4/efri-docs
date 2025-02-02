@@ -1,5 +1,6 @@
 import {
   BarChartIcon,
+  BarcodeIcon,
   BetweenHorizonalStartIcon,
   BlocksIcon,
   BookTextIcon,
@@ -7,6 +8,7 @@ import {
   BrickWallIcon,
   BrushIcon,
   DoorClosedIcon,
+  DoorOpenIcon,
   FeatherIcon,
   TerminalIcon,
   ToyBrickIcon,
@@ -82,6 +84,16 @@ export const ROUTES: EachRoute[] = [
     title: "Plugins",
     href: "/plugins",
     icon: <ToyBrickIcon size={16} />,
+  },
+  {
+    title: "Gates",
+    href: "/gates",
+    icon: <DoorOpenIcon size={16} />,
+  },
+  {
+    title: "Validators",
+    href: "/validators",
+    icon: <BarcodeIcon size={16} />,
   },
   {
     title: "Build",

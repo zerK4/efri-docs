@@ -1,30 +1,29 @@
+import { promises as fs } from "fs";
+import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import path from "path";
-import { promises as fs } from "fs";
-import remarkGfm from "remark-gfm";
-import rehypePrism from "rehype-prism-plus";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
+import rehypePrism from "rehype-prism-plus";
+import rehypeSlug from "rehype-slug";
+import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
-import matter from "gray-matter";
 
 // custom components imports
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Pre from "@/components/markdown/pre";
-import Note from "@/components/markdown/note";
-import { Stepper, StepperItem } from "@/components/markdown/stepper";
+import { CodeBlockWrapper } from "@/components/codeBlockWrapper";
+import ComponentList from "@/components/componentList";
+import StepperFormExample from "@/components/examples/stepperFormExample";
+import CodeBlock from "@/components/markdown/codeBlock";
 import Image from "@/components/markdown/image";
 import Link from "@/components/markdown/link";
+import Note from "@/components/markdown/note";
 import Outlet from "@/components/markdown/outlet";
-import { page_routes, ROUTES } from "./routes-config";
-import CodeBlock from "@/components/markdown/codeBlock";
+import Pre from "@/components/markdown/pre";
+import { Stepper, StepperItem } from "@/components/markdown/stepper";
 import { Button } from "@/components/ui/button";
-import { CodeBlockWrapper } from "@/components/codeBlockWrapper";
-import StepperFormExample from "@/components/examples/stepperFormExample";
-import ComponentList from "@/components/componentList";
-import SharedFormPreview from "@/components/sharedFormPreview";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { page_routes, ROUTES } from "./routes-config";
 
 // add custom components
 const components: any = {
@@ -44,7 +43,6 @@ const components: any = {
   CodeBlockWrapper,
   StepperFormExample,
   ComponentList,
-  SharedFormPreview,
   Separator,
 };
 

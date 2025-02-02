@@ -26,9 +26,9 @@ export const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ui.sepavl.com",
-  metadataBase: new URL("https://ui.sepavl.com"),
-  description: "Multi-step form, shared form and components for react",
+  title: "efri",
+  metadataBase: new URL("https://efri.sepavl.com"),
+  description: "The Efri framework documentation",
 };
 
 export default function RootLayout({

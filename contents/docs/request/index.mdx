@@ -1,0 +1,147 @@
+---
+title: Request
+description: The request object is a wrapper around the native Request object. It provides additional functionality and convenience methods for working with the request.
+---
+
+You have access to the request object from within your controller and the functions inside the router.
+
+## API Reference
+
+### `getInput(key: string, defaultValue?: any): any`
+
+Retrieves a specific input from the request body.
+
+**Example:**
+
+```ts
+const value = request.getInput("username", "guest");
+console.log(value); // Outputs the value of 'username' or 'guest' if not present.
+```
+
+---
+
+### `only(keys: string[]): Record<string, any>`
+
+Returns only the specified keys from the request body.
+
+**Example:**
+
+```ts
+const filteredData = request.only(["email", "password"]);
+console.log(filteredData);
+```
+
+---
+
+### `except(keys: string[]): Record<string, any>`
+
+Returns all request body keys except the specified ones.
+
+**Example:**
+
+```ts
+const filteredData = request.except(["password"]);
+console.log(filteredData);
+```
+
+---
+
+### `isJson(): boolean`
+
+Checks if the request contains JSON data.
+
+**Example:**
+
+```ts
+if (request.isJson()) {
+  console.log("This is a JSON request.");
+}
+```
+
+---
+
+### `isFormData(): boolean`
+
+Checks if the request contains form data.
+
+**Example:**
+
+```ts
+if (request.isFormData()) {
+  console.log("This is a FormData request.");
+}
+```
+
+---
+
+### `query(key: string, defaultValue?: any): string | null`
+
+Retrieves a query parameter from the request URL.
+
+**Example:**
+
+```ts
+const page = request.query("page", "1");
+console.log(page);
+```
+
+---
+
+### `allQuery(): Record<string, string>`
+
+Retrieves all query parameters as an object.
+
+**Example:**
+
+```ts
+const queryParams = request.allQuery();
+console.log(queryParams);
+```
+
+---
+
+### `getCookies(): Record<string, string>`
+
+Retrieves all cookies as an object.
+
+**Example:**
+
+```ts
+const cookies = request.getCookies();
+console.log(cookies);
+```
+
+---
+
+### `getCookie(name: string, defaultValue?: string): string`
+
+Retrieves a specific cookie.
+
+**Example:**
+
+```ts
+const session = request.getCookie("session_id", "default_session");
+console.log(session);
+```
+
+---
+
+### `validate<T>(schema: string | ZodSchema<T>): Promise<{ success: boolean; errors?: any }>`
+
+Validates the request body against a `ZodSchema`.
+
+**Example:**
+
+```ts
+import { z } from "zod";
+
+const schema = z.obsject({
+  username: z.string(),
+  password: z.string().min(6),
+});
+
+const result = await request.validate(schema || "already defined validator schema name");
+if (!result.success) {
+  console.error(result.errors);
+}
+```

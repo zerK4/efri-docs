@@ -1,4 +1,5 @@
 import {
+  AntennaIcon,
   BarChartIcon,
   BarcodeIcon,
   BetweenHorizonalStartIcon,
@@ -51,6 +52,16 @@ export const ROUTES: EachRoute[] = [
     icon: <BarChartIcon size={16} />,
   },
   {
+    title: "Request",
+    href: "/request",
+    icon: <AntennaIcon size={16} />,
+  },
+  {
+    title: "Response",
+    href: "/response",
+    icon: <AntennaIcon size={16} />,
+  },
+  {
     title: "Cli",
     href: "/cli",
     icon: <TerminalIcon size={16} />,
@@ -84,6 +95,24 @@ export const ROUTES: EachRoute[] = [
     title: "Plugins",
     href: "/plugins",
     icon: <ToyBrickIcon size={16} />,
+    items: [
+      {
+        title: "Definition",
+        href: "/definition",
+      },
+      {
+        title: "Response Plugins",
+        href: "/responsePlugins",
+      },
+      {
+        title: "Route Plugins",
+        href: "/routePlugins",
+      },
+      {
+        title: "Logger Plugins",
+        href: "/loggerPlugins",
+      },
+    ],
   },
   {
     title: "Gates",

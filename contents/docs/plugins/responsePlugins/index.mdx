@@ -1,0 +1,73 @@
+---
+title: Response Plugins
+description: The response plugin system of Efri
+---
+
+You can create a response plugin, which will allow you to add methods to the `ResponseHelper` class.
+
+By default only `html` and `json` methods are available, but you can add more by creating a plugin.
+
+### Creating a plugin
+
+You can use this command
+
+```bash
+bun efri make:plugin <name> --response
+```
+
+The command will create a file in the `plugins` folder, with the name you provided, and inside it will be a plugin with a `xml` method.
+
+```ts
+import type { IResponseHelper } from "efri/core/types/plugin";
+import type { IPlugin } from "efri/core/types/plugin";
+
+export default {
+  name: "xml-plugin",
+  type: "response-helper",
+  methods: {
+    xml(
+      helperContext: IResponseHelper,
+      data: string,
+      status: number = 200
+    ): Response {
+      return helperContext
+        .writeHead(status, { "Content-Type": "application/xml" })
+        .end(data);
+    },
+  },
+} satisfies IPlugin;
+```
+
+Once the plugin is created you might want to define the types for it,
+
+In `src/types/responseHelper.d.ts` add the following:
+
+```ts
+import type { ResponseHelper } from "efri/core/helpers";
+
+declare module "efri/core/types/plugin" {
+  export interface IResponseHelper extends ResponseHelper {
+    xml: (data: string, status?: number) => Response; // comes as default example
+  }
+}
+```
+
+If you added a method to the response helper you have to make sure that the `Controller` class is using it.
+
+Make sure your controller method's context is using the `IResponseHelper` type.
+
+```ts
+public async index({
+    res,
+    req,
+    params,
+    query,
+  }: RouterContext<{
+    res: IResponseHelper; // extend the context with the new type of the Response Helper
+  }>): Promise<Response> {
+    const users = await User.get();
+    return res.xml(
+      `<users>${users.map((user) => `<user>${user.name}</user>`)}</users>`
+    );
+  }
+  ```

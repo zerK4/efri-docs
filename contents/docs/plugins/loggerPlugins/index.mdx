@@ -1,0 +1,46 @@
+---
+title: Logger Plugins
+description: The plugin system for the core logger
+---
+
+You can create a logger plugin, which will let you enhance the core logger.
+
+There are three types of logger plugins at this moment, coming from core.
+
+1. Console Logger Plugin
+2. File Logger Plugin
+3. JSON File Logger Plugin
+
+This are created inside `/core/plugins/logger` folder and are autodiscovered by Efri.
+
+### Creating a logger plugin 
+
+You can use this command
+
+```bash
+bun efri make:plugin <name> --logger
+```
+
+The command will create a file in the `plugins` folder, with the name you provided, and inside it will be a plugin with a `log` method.
+
+```ts
+import type { LoggerConfig, LogLevel } from "efri/core/types";
+import type { IPlugin } from "efri/core/types/plugin";
+
+export default {
+  name: "file",
+  type: "logger",
+  methods: {
+    log: (
+      level: LogLevel,
+      message: any,
+      context: any,
+      config: LoggerConfig
+    ): void => {
+      // Do your thing..
+    },
+  },
+} satisfies IPlugin;
+```
+
+Make sure the name of your new plugin is unique and found in the `logger.ts` config file as the type, depending how you want to log your data.

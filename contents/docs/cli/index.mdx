@@ -3,35 +3,58 @@ title: CLI
 description: The documentation for Efri CLI
 ---
 
-Powerfull? Yes, but still in work in progress and in a very early stage.
+Efri CLI is a powerful yet evolving tool designed to streamline your development workflow. While still in its early stages, it provides essential commands to generate key application components and manage migrations efficiently.
 
 ## Commands
 
-1. ### `bun efri make:command`
-Ofc we have a command to make commands, this will create a commands folder in your project, 
-and a command file inside it extending the `Command` class from Efri.
+---
 
-2. ### `bun efri make:controller`
-This will create a controller file in your project, extending the `Controller` class from Efri.
 
-3. ### `bun efri make:model`
-This will create a model file in your project, extending the `Model` class from Efri.
+### 🔧 Code Generation
 
-6. ### `bun efri make:migration`
-This will create a migration file in your project, extending the `Migration` class from Efri.
+`bun efri make:command`
 
-7. ### `bun efri migrate`
-This will run all the migrations in your project.
+Generates a new command file inside the commands directory, extending the Command class from Efri.
 
-8. ### `bun efri migrate:rollback`
-This will rollback the last migration in your project.
+`bun efri make:controller`
 
-9. ### `bun efri migrate:status`
-This will show you the status of the migrations in your project.
+Creates a new controller file, extending the Controller class from Efri.
 
-10. ### `bun efri routes:list`
-This will list all the routes in your project.
+`bun efri make:model`
+
+Generates a new model file, extending the Model class from Efri.
+
+`bun efri make:migration`
+
+Creates a new migration file, extending the Migration class from Efri.
+
+---
+
+📦 Database Migrations
+
+`bun efri migrate`
+
+Runs all pending migrations in your project.
+
+`bun efri migrate:rollback`
+
+Rolls back the last executed migration.
+
+`bun efri migrate:status`
+
+Displays the current migration status.
+
+---
+
+
+📌 Route Management
+
+`bun efri routes:list`
+
+Lists all registered routes in your project.
 
 Options:
-- `--export`: Returns the routes ready to be copied, without styles.
-- `--export --json`: Output the routes in JSON format.
+
+--export → Outputs routes in a clean format, ready to copy.
+
+--export --json → Exports routes in JSON format.

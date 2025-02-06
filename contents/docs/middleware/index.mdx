@@ -7,42 +7,37 @@ Efri has a middleware system that allows you to add functionality & checks to yo
 You already have 2 demo middlewares in Efri, the `logger` and the `auth` middlewares.
 
 <Note type="warning">
-This is still work in progress, and the middleware system is not yet stable.
+This is still work in progress, and the middleware system is not yet stable and will for sure be changing in the future.
 </Note>
 
 ## Configuration
 
-1. Create a middleware file same as logger and auth are done.
-2. Create the middleware class and implement the `MiddlewareHandler` interface.
-```ts
-import type { MiddlewareHandler } from "efri/core/types/middleware";
+Run the following command to create a new middleware file:
 
-export class MyFirstMiddleware implements MiddlewareHandler {
+```bash
+bun efri make:middleware <name>
+```
+
+This will create a new middleware file in the `src/middlewares` directory.
+
+```ts
+import { middlewareStack } from "efri/core/middlewares";
+
+export default middlewareStack.register("TestOne", {
   async handle(req: Request, next: () => Promise<Response>): Promise<Response> {
-    console.log("This is my first middleware");
-    return next();
-  }
-}
+    return await next();
+  },
+});
 ```
 
-3. Register the middleware in the `index.ts` file from within middlewares folder.
-
-```ts
-export default {
-  "auth": new AuthMiddleware(),
-  "logger": new LoggerMiddleware(),
-  'my-first-middleware': new MyFirstMiddleware(),
-};
-```
-
-4. Make use of it.
+Make use of it.
 
 ```ts
 router.get('/my-route', ({ req, res }) => {
   return res.json({ message: 'New route to test the middleware' });
-}, ['my-first-middleware']);
+}, ['TestOne']);
 
 // or
 
-router.get('/my-route', [MyController, 'index'], ['my-first-middleware']);
+router.get('/my-route', [MyController, 'index'], ['TestOne']);
 ```

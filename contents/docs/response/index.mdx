@@ -1,0 +1,214 @@
+---
+title: Response
+description: The ResponseHelper class is a utility for managing HTTP responses in a structured and extensible way. It supports plugins, allowing you to extend its functionality dynamically.
+---
+
+You have access to the response object from within your controller and the functions inside the router.
+
+## Overview
+
+The `ResponseHelper` class is designed to simplify the creation and configuration of HTTP responses. It uses a singleton pattern to ensure a single instance is used throughout your application. It also supports plugins, which can add custom methods to the class.
+
+---
+
+## Methods
+
+### `getInstance`
+
+Returns the singleton instance of `ResponseHelper`. If an instance does not exist, it creates one and loads any available plugins.
+
+```javascript
+public static getInstance(): ResponseHelper
+```
+
+**Example:**
+
+```javascript
+const responseHelper = ResponseHelper.getInstance();
+```
+
+---
+
+### `writeHead`
+
+Sets the status code and headers for the response. Returns the instance for method chaining.
+
+```javascript
+public writeHead(status: number, headers?: Record<string, string>): this
+```
+
+**Parameters:**
+
+- `status`: The HTTP status code (e.g., 200, 404).
+- `headers`: Optional headers to include in the response.
+
+**Example:**
+
+```javascript
+responseHelper.writeHead(200, { 'Content-Type': 'text/plain' });
+```
+
+---
+
+### `end`
+
+Finalizes the response by creating a `Response` object with the configured status, headers, and body. Resets the configuration after creating the response.
+
+```javascript
+public end(body?: BodyInit): Response
+```
+
+**Parameters:**
+
+- `body`: Optional response body (e.g., a string, JSON, or HTML).
+
+**Example:**
+
+```javascript
+const response = responseHelper.end('Hello, world!');
+```
+
+---
+
+### `json`
+
+Sends a JSON response with the specified data and status code.
+
+```javascript
+json(data: any, status: number = 200): Response
+```
+
+**Parameters:**
+
+- `data`: The data to serialize as JSON.
+- `status`: The HTTP status code (default: 200).
+
+**Example:**
+
+```javascript
+const response = responseHelper.json({ message: 'Success' }, 200);
+```
+
+---
+
+### `html`
+
+Sends an HTML response with the specified content and status code.
+
+```javascript
+html(content: string, status: number = 200): Response
+```
+
+**Parameters:**
+
+- `content`: The HTML content to send.
+- `status`: The HTTP status code (default: 200).
+
+**Example:**
+
+```javascript
+const response = responseHelper.html('<h1>Hello, world!</h1>', 200);
+```
+
+---
+
+### `send`
+
+Sends a response with the specified body and status code.
+
+```javascript
+send(body: BodyInit, status: number = 200): Response
+```
+
+**Parameters:**
+
+- `body`: The response body (e.g., a string or JSON).
+- `status`: The HTTP status code (default: 200).
+
+**Example:**
+
+```javascript
+const response = responseHelper.send('Hello, world!', 200);
+```
+
+---
+
+### `setContentType`
+
+Sets the `Content-Type` header for the response. Returns the instance for method chaining.
+
+```javascript
+public setContentType(contentType: string): this
+```
+
+**Parameters:**
+
+- `contentType`: The value for the `Content-Type` header (e.g., `application/json`).
+
+**Example:**
+
+```javascript
+responseHelper.setContentType('application/json');
+```
+
+---
+
+### `hasMethod`
+
+Checks if a custom method (added by a plugin) exists.
+
+```javascript
+public hasMethod(methodName: string): boolean
+```
+
+**Parameters:**
+
+- `methodName`: The name of the method to check.
+
+**Example:**
+
+```javascript
+if (responseHelper.hasMethod('customMethod')) {
+  // Use the custom method
+}
+```
+
+---
+
+### `getMethod`
+
+Retrieves a custom method (added by a plugin) by its name.
+
+```javascript
+public getMethod(methodName: string): Function | undefined
+```
+
+**Parameters:**
+
+- `methodName`: The name of the method to retrieve.
+
+**Example:**
+
+```javascript
+const customMethod = responseHelper.getMethod('customMethod');
+if (customMethod) {
+  customMethod();
+}
+```
+
+---
+
+### `getMethods`
+
+Returns a map of all custom methods added by plugins.
+
+```javascript
+public static getMethods(): Map<string, Function>
+```
+
+**Example:**
+
+```javascript
+const methods = ResponseHelper.getMethods();
+console.log(methods);
+```

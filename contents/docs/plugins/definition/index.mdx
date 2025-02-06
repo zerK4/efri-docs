@@ -1,0 +1,48 @@
+---
+title: Plugins
+description: The plugin system of Efri
+---
+
+<Note type="warning">
+The plugin system is still under construction and is subjected to change
+</Note>
+
+### Intro
+
+Currently you can create two type of plugins, a route plugin, and a response helper.
+
+How is this helpfull? Well, for packages(which are not yet ready to be created/published or installed), the packages will allow external plugins to be added to your project.
+Think of a plugin like the [debugbar for laravel](https://github.com/barryvdh/laravel-debugbar), it will allow you to return project crucial information from the backend directly to your frontend. Monitoring plugins, etc. endles possibilities.
+
+### Creating a plugin
+
+Run the command
+
+```bash
+bun efri make:plugin <name> --route // this can be response or route
+```
+
+This will create a plugin inside of `src/plugins` with the name you provided and content resembling to this.
+
+```ts
+import type { RoutePlugin } from "efri/core/types/routes";
+import { UserController } from "../../controllers/UserController";
+
+const dynamicRoutesPlugin: RoutePlugin = {
+  name: "dynamic-routes",
+  type: "route-plugin",
+  routes: [
+    {
+      handler: [UserController, "index"], // Use the controller class and the method you want to call
+      method: "GET", // HTTP method
+      path: "/dynamic/route", // Route path
+      middleware: [], // Middleware
+      file: "./src/plugins/dynamic.ts", // File path, helps to determine if the route is from a plugin or not
+    },
+  ],
+};
+
+export default dynamicRoutesPlugin;
+```
+
+Now go to `http://localhost:3000/dynamic/route` and you should see the response from the `UserController`.

@@ -161,18 +161,48 @@ export class UserController extends Controller {
 
 ---
 
+## Using the Validator with the request
+
+```ts
+import { z } from "zod";
+import { Request } from "efri/core/request";
+import { Controller } from "efri/core/controllers/Controller";
+
+export class UserController extends Controller {
+  public async create({ req }: RouterContext) {
+    try {
+      const safe = await req.validate("newUser");
+
+      if (!safe.success) {
+        return res.json({ errors: safe.errors }, 422);
+      }
+
+      const data: IUser = {
+        name: "John Doe",
+        email: "john@example.com",
+        password: "password",
+      };
+
+      const user = await User.create(data);
+      return res.json({ user });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  }
+}
+```
+
+---
+
 ## 🔐 Using Middleware for Validator Authorization
 
 ```ts
-import { gate } from "efri/core/gates/CoreGate";
 import { UserController } from "../controllers/UserController";
 import { Router } from "efri/core/router";
 
 const router = Router.getInstance();
 
-gate.setUser({ id: 1, name: "Test User", email: "test@example.com" });
-
-router.group({ prefix: "/api", middleware: ["logger", "user.read"] }, () => {
+router.group({ prefix: "/api", middleware: ["logger"] }, () => {
   router.group({ prefix: "/users" }, () => {
     router.post("/", [UserController, "create"], ["newUser"]);
   });

@@ -1,0 +1,37 @@
+---
+title: Route Plugins
+description: The route plugin system of Efri
+---
+
+You can create a route plugin, which will allow you to interact with the Router and push routes from outside the routes directory.
+
+### Creating a plugin
+
+Run the command:
+
+```bash
+bun efri make:plugin <name> --route
+```
+
+This will create a plugin inside of `src/plugins` with the name you provided and content resembling to this.
+
+```ts
+import { UserController } from "@/controllers/UserController";
+import type { IPlugin } from "efri/core/types/plugin";
+
+export default {
+  name: "TestOne",
+  type: "route-plugin",
+  routes: [
+    {
+      handler: [UserController, "index"], // Use the controller class and the method you want to call
+      method: "GET", // HTTP method
+      path: "/dynamic/route", // Route path
+      middleware: [], // Middleware
+      file: "./src/plugins/dynamic.ts", // File path, helps to determine if the route is from a plugin or not
+    },
+  ],
+} satisfies IPlugin;
+```
+
+Now go to `http://localhost:3000/dynamic/route` and you should see the response from the `UserController`.

@@ -11,6 +11,7 @@ import {
   DoorClosedIcon,
   DoorOpenIcon,
   FeatherIcon,
+  FileSlidersIcon,
   TerminalIcon,
   ToyBrickIcon,
   WaypointsIcon,
@@ -50,6 +51,11 @@ export const ROUTES: EachRoute[] = [
       },
     ],
     icon: <BarChartIcon size={16} />,
+  },
+  {
+    title: "Config",
+    href: "/config",
+    icon: <FileSlidersIcon size={16} />,
   },
   {
     title: "Request",

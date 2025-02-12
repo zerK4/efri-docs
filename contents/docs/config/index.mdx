@@ -1,0 +1,73 @@
+---
+title: Config
+description: The documentation for Efri Config system
+---
+
+The configuration system was designed to be simple, flexible, and easy to use. It allows you to define your configurations in a simple and straightforward way, and provides a powerful and flexible way to access and manage your configurations.
+
+## Defining a configuration
+
+To define a configuration, you can use the `config.defineConfig` method. This method takes two mandatory arguments: the name of the configuration and a Zod schema(or a plain object). The Zod schema is used to validate the configuration values with the values from your `.env` file. 
+
+A third argument is optional and allows you to specify a prefix for the configuration. 
+This is useful when you have multiple configurations with the same name but different prefixes and also when you want to name the config values simpler, not `APP_PORT` like in `.env` file but just `port`.
+
+Here's an example of defining a configuration named `app`:
+
+```typescript
+import { config } from "efri/core/config";
+import { z } from "zod";
+
+export default config.defineConfig(
+  "app",
+  z.object({
+    env: z
+      .enum(["local", "development", "production", "testing"])
+      .default("local"),
+    name: z.string().default("efri"),
+    port: z
+      .string()
+      .regex(/^\d+$/, "PORT must be a valid number")
+      .transform((val) => parseInt(val, 10)),
+  }),
+  {
+    prefix: "APP",
+  }
+);
+```
+
+Once the config created you can access it from anywhere in your code by using the `config` object:
+
+```typescript
+import { config } from "efri/core/config";
+
+console.log(config.get("app")); // { env: "local", name: "efri", port: 3000 }
+```
+
+## API
+
+### `config.defineConfig(name: string, schema: ZodType | Record<string, unknown>, options?: { prefix?: string }): void`
+
+Defines a configuration with the given name and schema. The schema can be a Zod schema or a plain object. The options object is optional and allows you to specify a prefix for the configuration.
+
+### `config.get(name: string): unknown | undefined`
+
+Returns the value of the configuration with the given name. If the configuration is not found, returns `undefined`.
+
+### `config.getAll(): Record<string, unknown>`
+
+Returns an object containing all the configurations.
+
+### `config.has(name: string): boolean`
+
+Returns `true` if the configuration with the given name exists, otherwise returns `false`.
+
+### `config.clear(): void`
+
+Clears all the configurations.
+
+### `config.validateSchema(schema: ZodType, options?: { prefix?: string }): ZodType`
+
+Validates the configuration values with the values from your `.env` file. If the validation fails, it throws an error.
+
+The options object is optional and allows you to specify a prefix for the configuration.

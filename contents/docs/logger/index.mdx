@@ -3,11 +3,27 @@ title: The Logger
 description: The logging system of Efri
 ---
 
+The system was built from ground up as the existing solution i was trying, `pino` it is known for being a bit slow in [Bun](https://bun.sh).
+
 <Note type="warning">
-The logger is still work in progress, and the logger system is not yet stable or configurable.
+The logger ***will*** change, i am not happy with its performance as it slows down the server when used as middleware to log each entry. 
 </Note>
 
-The logger can be used like this:
+## Configuration
+
+```ts
+import { config } from "efri/core/config";
+
+export default config.defineConfig("logger", {
+  type: ["file", "console"], // Available ["json"],
+  level: "info",
+  prettyPrint: true,
+  filePath: "./logs/app.log",
+});
+```
+
+## Usage
+
 ```ts
 import { logger } from "efri/core/logger";
 
@@ -16,8 +32,85 @@ logger.warn('This is a warning message');
 logger.error('This is an error message');
 ```
 
-This will log the message to the console, and also to the `./logs/app.log` file.
+This will log the message to the console, and also to the `./logs/app.log` file as defined in the config file.
 
-<Note type="success">
-Configuration to come soon.
-</Note>
+## Extending
+
+By default efri comes with three type of loggers:
+1. file - logs to the `./logs/app.log` file(or any specified path)
+2. console - logs to the console
+3. json - logs to the console in json format in `./logs/app.json` file(or any specified path)
+
+As efri core package is not bundled you can see the code clearly.
+```text
+node_modules/efri/
+├── core/
+    ├── plugins/
+        └── logger/
+            ├── ConsoleLoggerPlugin.ts
+            ├── FileLoggerPlugin.ts
+            └── JsonFileLoggerPlugin.ts
+```
+
+### Here the `FileLoggerPlugin` to be examined 
+
+```ts
+import * as fs from 'fs';
+import * as path from 'path';
+import type { LoggerConfig, LoggerPlugin } from '../../types';
+import { PluginLoader } from '../PluginLoader';
+import { config } from '../../config';
+import { CoreLogger } from '../../logger';
+
+class FileLoggerPlugin implements LoggerPlugin {
+  type = 'logger' as const;
+  name = 'file'; // Matches the type in config.type
+  routes = [];
+  private loggerInstance: CoreLogger = CoreLogger.getInstance();
+  methods = {
+    log: (
+      level: 'debug' | 'info' | 'warn' | 'error',
+      message: any, // Accepts any type for the message
+      context: any, // Optional context parameter
+      config: LoggerConfig
+    ): void => {
+      // Format the log message
+      const timestamp = new Date().toISOString();
+      const logLevel = level.toUpperCase().padEnd(5); // Ensure consistent spacing for log levels
+
+      // Handle Error objects in the message
+      const formattedMessage = this.loggerInstance.formatMessage(message);
+
+      // Format the log entry
+      let logEntry = `[${timestamp}] ${logLevel} - ${formattedMessage}`;
+
+      // Append context if provided
+      if (context) {
+        const formattedContext = this.loggerInstance.formatMessage(context);
+        logEntry += `\nContext: ${formattedContext}`;
+      }
+
+      // Append a newline at the end
+      logEntry += '\n';
+
+      // Write the log entry to the file
+      fs.appendFileSync(config.filePath, logEntry);
+    },
+  };
+  private filePath: string;
+
+  constructor() {
+    this.filePath = config.get('logger')?.filePath || './logs/app.log';
+    this.setupFileLogging();
+  }
+
+  private setupFileLogging(): void {
+    const dir = path.dirname(this.filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  }
+}
+
+export default PluginLoader.registerPlugin(new FileLoggerPlugin());
+```

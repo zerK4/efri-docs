@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 // Image metadata
-export const alt = "nents";
+export const alt = "efri";
 export const size = {
   width: 1200,
   height: 630,
